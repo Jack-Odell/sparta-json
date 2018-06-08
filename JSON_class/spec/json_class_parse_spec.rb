@@ -3,6 +3,7 @@ require 'spec_helper'
 describe 'Testing the exchange rates' do
   before(:all) do
     @exchange_rates = ParseJson.new('json_exchange_rates.json')
+    @exchange_rates.get_floats
   end
 
   it 'Should be a hash' do
@@ -10,20 +11,18 @@ describe 'Testing the exchange rates' do
   end
 
   it 'Should contain the base as EUR' do
-    expect(@exchange_rates.json_file['base']).to include("EUR")
+    expect(@exchange_rates.get_base).to eq("EUR")
   end
 
   it 'Should have a date string' do
-    expect(@exchange_rates.json_file['date']).to be_kind_of(String)
+    expect(@exchange_rates.get_date).to be_kind_of(String)
   end
 
   it 'Should have 31 rates' do
-    expect(@exchange_rates.json_file['rates'].keys.count).to eq(31)
+    expect(@exchange_rates.count_rates).to eq(31)
   end
 
   it 'Should have all rates as floats' do
-    @exchange_rates.json_file['rates'].each do |key, value|
-      expect(value).to be_kind_of(Float)
-    end
+    expect(@exchange_rates.get_floats.values).to all(be_kind_of(Float))
   end
 end
